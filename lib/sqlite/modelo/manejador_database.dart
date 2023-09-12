@@ -23,6 +23,7 @@ class ManejadorDatabase {
 
   Future<Database> _inicializarDB() async {
     String path = await getDatabasesPath();
+    print("DB_Path: $path");
     return await openDatabase(
       join(path, nombreDb),
       onCreate: (db, version) async {

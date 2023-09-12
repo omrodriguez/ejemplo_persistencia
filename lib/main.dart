@@ -1,9 +1,15 @@
+import 'dart:io';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'sqlite/modelo/album_biblio.dart';
 import 'sqlite/views/album_list.dart';
 
 void main() {
+  if (Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+  }
+  databaseFactory = databaseFactoryFfi;
   runApp(ChangeNotifierProvider(create: (_) =>
     AlbumBiblio(),
     child: const MyApp()
