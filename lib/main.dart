@@ -10,6 +10,7 @@ void main() {
     sqfliteFfiInit();
   }
   databaseFactory = databaseFactoryFfi;
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(ChangeNotifierProvider(create: (_) =>
     AlbumBiblio(),
     child: const MyApp()

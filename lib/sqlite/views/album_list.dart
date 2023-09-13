@@ -1,5 +1,4 @@
 import 'package:ejemplo_persistencia/sqlite/modelo/manejador_database.dart';
-
 import 'album_form.dart';
 import 'album_vista.dart';
 import 'package:flutter/material.dart';
@@ -18,37 +17,39 @@ class AlbumLista extends StatefulWidget {
 class _AlbumListaState extends State<AlbumLista> {
   bool dbReaded = false;
   int selectedAlbum = 0;
-  late AlbumBiblio albumes;
-  late ManejadorDatabase manejadorDB;
+  AlbumBiblio? albumes;
+  ManejadorDatabase? manejadorDB = ManejadorDatabase.getInstance();
 
   @override
   void initState() {
     super.initState();
-    manejadorDB = ManejadorDatabase.getInstance();
+    Future.microtask(() {
+      albumes = context.read<AlbumBiblio>();
+      manejadorDB!.albumes().then((value) { 
+        albumes!.setAlbumes(value);
+        setState(() {
+          dbReaded = true;
+        });
+      });
+    });
   }
 
   @override
   void dispose() {
-    manejadorDB.cerrarDB();
+    manejadorDB!.cerrarDB();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     albumes = Provider.of<AlbumBiblio>(context);
-    if (!dbReaded) {
-      manejadorDB.albumes().then((value) {
-        albumes.setAlbumes(value);
-        dbReaded = true;
-      });
-    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Biblioteca de Albumes"),
       ),
       body: !dbReaded? const Center(child: CircularProgressIndicator()) 
-        : (albumes.albumes.isNotEmpty)? ListView(
+        : (albumes!.albumes.isNotEmpty)? ListView(
           padding: const EdgeInsets.all(10),
           children: ListTile.divideTiles(context: context, 
             tiles: crearLista(), color:Colors.amber).toList(),
@@ -74,8 +75,8 @@ class _AlbumListaState extends State<AlbumLista> {
 
   List<Widget> crearLista() {
     final List<Widget> lista = <Widget>[];
-    for(int i = 0; i < albumes.albumes.length; i++ ){
-      Album album = albumes.getAlbumByIndex(i);
+    for(int i = 0; i < albumes!.albumes.length; i++ ){
+      Album album = albumes!.getAlbumByIndex(i);
       lista.add(
         ListTile(
           leading: const Icon(Icons.album),
@@ -127,34 +128,34 @@ class _AlbumListaState extends State<AlbumLista> {
     );
 
     if (album != null) {
-      int id = await manejadorDB.insertarAlbum(album);
+      int id = await manejadorDB!.insertarAlbum(album);
       album.id = id;
-      albumes.addAlbum(album);
+      albumes!.addAlbum(album);
     }
   }
 
   void mostrarAlbum(BuildContext context, int index) {
     Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => AlbumVista(album: albumes.getAlbumByIndex(index),),));
+              builder: (context) => AlbumVista(album: albumes!.getAlbumByIndex(index),),));
   }
 
   Future<void> actualizarAlbum(BuildContext context, int index,) async {
     Album? album = await Navigator.push(context, 
       MaterialPageRoute(
-        builder: (context) => AlbumForm(album: albumes.getAlbumByIndex(index)),)
+        builder: (context) => AlbumForm(album: albumes!.getAlbumByIndex(index)),)
     );
 
     if(album != null){
-      albumes.updateAlbum(index, album);
-      manejadorDB.actualizarAlbum(album);
+      albumes!.updateAlbum(index, album);
+      manejadorDB!.actualizarAlbum(album);
     }
   }
 
   bool removerAlbum(int index) {
-    Album album = albumes.getAlbumByIndex(index);
-    var eliminado = albumes.removeAlbum(index);
-    manejadorDB.removerAlbum(album.id!);
+    Album album = albumes!.getAlbumByIndex(index);
+    var eliminado = albumes!.removeAlbum(index);
+    manejadorDB!.removerAlbum(album.id!);
     return eliminado;
   }
 }

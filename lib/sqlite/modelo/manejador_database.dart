@@ -7,13 +7,14 @@ class ManejadorDatabase {
   static const String nombreDb = 'albumes_database.db';
   static const String nombreTabla = 'albumes';
   static Database? db;
-  static ManejadorDatabase? _instance;
+  static final ManejadorDatabase _instance = ManejadorDatabase._();
 
-  ManejadorDatabase._();
+  ManejadorDatabase._() {
+    _inicializarDB();
+  }
 
   static ManejadorDatabase getInstance() {
-    _instance??=ManejadorDatabase._();
-    return _instance!;
+    return _instance;
   }
 
   Future<Database> getDB() async {
@@ -23,8 +24,7 @@ class ManejadorDatabase {
 
   Future<Database> _inicializarDB() async {
     String path = await getDatabasesPath();
-    print("DB_Path: $path");
-    return await openDatabase(
+    db = await openDatabase(
       join(path, nombreDb),
       onCreate: (db, version) async {
       await db.execute(
@@ -32,6 +32,7 @@ class ManejadorDatabase {
       );},
       version: 1,
     );
+    return db!;
   }
 
   Future<int> insertarAlbum(Album album) async {
