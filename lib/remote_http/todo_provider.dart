@@ -22,5 +22,24 @@ class TodoProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> agregarTodo(String titulo) async {
+    Todo todo = await httpController.agregarTodo(titulo);
+    _todos.add(todo);
+    notifyListeners();
+  }
+
+  Future<void> actualizarTodo(Todo todo) async {
+    todo = await httpController.actualizarTodo(todo);
+    notifyListeners();
+  }
+
+  Future<void> eliminarTodo(Todo todo) async {
+    bool eliminado = await httpController.eliminarTodo(todo);
+    if (eliminado) {
+      _todos.remove(todo);
+      notifyListeners();
+    }
+  }
+
   Todo getTodoByIndex(int index) =>_todos[index];
 }

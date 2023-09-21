@@ -7,10 +7,10 @@ class Todo {
   Todo(this.userId, this.id, this.title, this.completed);
 
   Todo.fromJson(Map<String, dynamic> json)
-    : userId = json['userId'], 
-      id = json['id'],
+    : userId = json['userId']??1, 
+      id = json['id']??0,
       title = json['title'],
-      completed = json['completed'];
+      completed = json['completed']?? false;
 
   Map<String, dynamic> toJson() => {
     'userId': userId,
