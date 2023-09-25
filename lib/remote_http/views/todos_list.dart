@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'todo_provider.dart';
-import 'todo.dart';
+import '../modelo/todo_provider.dart';
+import '../modelo/todo.dart';
 import 'todo_form.dart';
 
 class TodosLista extends StatefulWidget {

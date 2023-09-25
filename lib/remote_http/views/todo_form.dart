@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'todo.dart';
+import '../modelo/todo.dart';
 
 class TodoForm extends StatefulWidget {
   const TodoForm({super.key});

@@ -1,8 +1,14 @@
+import 'remote_http/views/todos_list.dart';
 import 'package:flutter/material.dart';
-import 'secure_storage/my_home_page.dart';
+import 'package:provider/provider.dart';
+import 'remote_http/modelo/todo_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(ChangeNotifierProvider(create: (_) =>
+    TodoProvider(),
+    child: const MyApp()
+  ),);
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +22,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: const TodosLista(),
     );
   }
 }
+
