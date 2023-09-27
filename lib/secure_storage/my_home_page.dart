@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
-  final String title ='Ejemplo SharedPreferences';
+  final String title ='Ejemplo Secure Storage';
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final storage = const FlutterSecureStorage();
+  final llave = "contador";
   int _counter = 0;
 
   @override
@@ -20,25 +22,21 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void leerCounter() async {
-    SharedPreferences.getInstance().then((prefs) {
-      final int? counter = prefs.getInt("counter");
-      if (counter != null) {
-        //borrarCounter();
-        setState(() {
-          _counter = counter;
-        });}});}
+    String contador = await storage.read(key: llave)?? '0';  
+    setState(() {
+      _counter = int.parse(contador);
+    });
+  }
 
   void borrarCounter() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("counter");
+    storage.delete(key: llave);
   }
 
   void _incrementCounter() async {
     setState(() {
       _counter++;
-    });
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt("counter", _counter);
+    });    
+    await storage.write(key: llave, value: _counter.toString());
   }
 
   @override

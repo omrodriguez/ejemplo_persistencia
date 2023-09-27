@@ -44,6 +44,7 @@ dependencies:
   sqflite_common_ffi:
   http: ^1.1.0
   web_socket_channel: ^2.4.0
+  flutter_secure_storage: ^9.0.0
 
 
 dev_dependencies:
